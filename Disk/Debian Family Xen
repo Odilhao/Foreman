@@ -1,0 +1,54 @@
+<%#
+kind: ptable
+name: Preseed custom LVM
+oses:
+- Debian 6.0
+- Debian 7.
+- Debian 8.
+- Ubuntu 10.04
+- Ubuntu 12.04
+- Ubuntu 13.04
+- Ubuntu 14.04
+%>
+<% if @host.params['install-disk'] -%>
+d-i partman-auto/disk string <%= @host.params['install-disk'] %>
+<% else -%>
+d-i partman-auto/disk string /dev/xvda
+<% end -%>
+d-i partman-auto/method string lvm
+
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-md/device_remove_md boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+
+d-i partman-auto/init_automatically_partition \
+  select Guided - use entire disk and set up LVM
+
+d-i partman-auto-lvm/guided_size string max
+d-i partman-auto-lvm/new_vg_name string vg00
+
+d-i partman-auto/expert_recipe string                         \
+      boot-root ::                                            \
+              64 128 128 ext3                                 \
+                      $primary{ } $bootable{ }                \
+                      method{ format } format{ }              \
+                      use_filesystem{ } filesystem{ ext4 }    \
+                      mountpoint{ /boot }                     \
+              .                                               \
+              128 512 200% linux-swap                         \
+                      method{ swap } format{ }                \
+              .                                               \
+              512 512 512 ext3                                \
+                      method{ format } format{ } $lvmok{ }    \
+                      use_filesystem{ } filesystem{ ext4 }    \
+                      mountpoint{ / }                         \
+              .                                               \
+              
+
+d-i partman/default_filesystem string ext4
+
+d-i partman/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true

@@ -1,0 +1,8 @@
+default=0
+timeout=5
+splashimage=(hd0,0)/grub/splash.xpm.gz
+hiddenmenu
+title Oracle Linux Server (2.6.32-279.el6.x86_64)
+        root (hd0,0)
+        kernel /vmlinuz-2.6.32-279.el6.x86_64 ro root=/dev/mapper/vg_orabuild-lv_root nofb quiet splash=quiet LANG=en_US.UTF-8 rd_LVM_LV=vg_orabuild/lv_swap rd_LVM_LV=vg_orabuild/lv_root rd_NO_MD rd_NO_LUKS SYSFONT=latarcyrheb-sun16 crashkernel=auto  KEYBOARDTYPE=pc KEYTABLE=us rd_NO_DM rhgb quiet
+        initrd /initramfs-2.6.32-279.el6.x86_64.img
